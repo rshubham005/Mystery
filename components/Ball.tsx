@@ -47,7 +47,7 @@ export function Ball({ ball, onClick, disabled, index }: BallProps) {
         >
             {/* Floating Wrapper for inner content */}
             <motion.div
-                className="w-full h-full absolute inset-0"
+                className="w-full h-full absolute inset-0 flex items-center justify-center"
                 animate={{
                     y: ball.isRevealed ? 0 : [0, -6, 0]
                 }}
