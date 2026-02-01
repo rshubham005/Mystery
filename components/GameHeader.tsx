@@ -1,31 +1,87 @@
 "use client";
 
-import { Play, RotateCcw, Eye, RefreshCw } from "lucide-react";
+import { Play, RotateCcw, Eye, RefreshCw, Pencil, Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useState, useRef, useEffect } from "react";
 
 interface GameHeaderProps {
     onShuffle: () => void;
     onReset: () => void;
-    isRevealMode: boolean; // Assuming we might want a toggle for "Reveal Mode" later, or just use it for visual state
+    isRevealMode: boolean;
     toggleRevealMode: () => void;
     isInitialized: boolean;
+    title: string;
+    onTitleChange: (newTitle: string) => void;
 }
 
-// Configurable Title
-const GAME_TITLE = "RetroZiah Slab Batch";
+export function GameHeader({ onShuffle, onReset, isRevealMode, toggleRevealMode, isInitialized, title, onTitleChange }: GameHeaderProps) {
+    const [isEditing, setIsEditing] = useState(false);
+    const [tempTitle, setTempTitle] = useState(title);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-export function GameHeader({ onShuffle, onReset, isRevealMode, toggleRevealMode, isInitialized }: GameHeaderProps) {
+    useEffect(() => {
+        if (isEditing && inputRef.current) {
+            inputRef.current.focus();
+        }
+    }, [isEditing]);
+
+    const handleSave = () => {
+        if (tempTitle.trim()) {
+            onTitleChange(tempTitle);
+        } else {
+            setTempTitle(title); // Revert if empty
+        }
+        setIsEditing(false);
+    };
+
+    const handleCancel = () => {
+        setTempTitle(title);
+        setIsEditing(false);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') handleSave();
+        if (e.key === 'Escape') handleCancel();
+    };
+
     return (
         <header className="w-full h-24 px-6 flex items-center justify-between metallic-surface relative z-20">
-            {/* Logo */}
-            <div className="flex items-center">
-                <h1 className="text-3xl md:text-5xl font-black italic font-russo text-[#fbbf24] drop-shadow-[0_4px_0_rgba(0,0,0,1)] tracking-wide filter transform skew-x-[-10deg]"
-                    style={{
-                        textShadow: "0 4px 0 #000, -2px -2px 0 #1e3a8a, 2px -2px 0 #1e3a8a, -2px 2px 0 #1e3a8a, 2px 2px 0 #1e3a8a",
-                        WebkitTextStroke: "2px #1e3a8a"
-                    }}>
-                    {GAME_TITLE}
-                </h1>
+            {/* Logo area with Editable Title */}
+            <div className="flex items-center gap-4 group/title">
+                {isEditing ? (
+                    <div className="flex items-center gap-2">
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={tempTitle}
+                            onChange={(e) => setTempTitle(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            className="text-3xl md:text-5xl font-black italic font-russo bg-black/50 text-[#fbbf24] border-b-2 border-[#fbbf24] focus:outline-none px-2 py-1 rounded w-[400px]"
+                        />
+                        <button onClick={handleSave} className="p-2 bg-green-600 rounded hover:bg-green-500 text-white"><Check size={20} /></button>
+                        <button onClick={handleCancel} className="p-2 bg-red-600 rounded hover:bg-red-500 text-white"><X size={20} /></button>
+                    </div>
+                ) : (
+                    <>
+                        <h1 className="text-3xl md:text-5xl font-black italic font-russo text-[#fbbf24] drop-shadow-[0_4px_0_rgba(0,0,0,1)] tracking-wide filter transform skew-x-[-10deg]"
+                            style={{
+                                textShadow: "0 4px 0 #000, -2px -2px 0 #1e3a8a, 2px -2px 0 #1e3a8a, -2px 2px 0 #1e3a8a, 2px 2px 0 #1e3a8a",
+                                WebkitTextStroke: "2px #1e3a8a"
+                            }}>
+                            {title}
+                        </h1>
+                        <button
+                            onClick={() => {
+                                setTempTitle(title);
+                                setIsEditing(true);
+                            }}
+                            className="opacity-0 group-hover/title:opacity-100 transition-opacity p-2 text-slate-400 hover:text-white hover:bg-white/10 rounded-full"
+                            title="Edit Title"
+                        >
+                            <Pencil size={20} />
+                        </button>
+                    </>
+                )}
             </div>
 
             {/* Controls */}

@@ -25,6 +25,7 @@ export default function Home() {
 
   const [isChaseModalOpen, setIsChaseModalOpen] = useState(false);
   const [isRevealMode, setIsRevealMode] = useState(false);
+  const [gameTitle, setGameTitle] = useState("RetroZiah Slab Batch");
 
   const totalPacks = 50; // Hardcoded strictly based on the game logic usually being 50
   const packsOpened = totalPacks - packsRemaining;
@@ -42,6 +43,8 @@ export default function Home() {
           isRevealMode={isRevealMode}
           toggleRevealMode={() => setIsRevealMode(!isRevealMode)}
           isInitialized={isInitialized}
+          title={gameTitle}
+          onTitleChange={setGameTitle}
         />
 
         {/* Stats Bar */}
