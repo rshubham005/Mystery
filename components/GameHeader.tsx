@@ -11,17 +11,20 @@ interface GameHeaderProps {
     isInitialized: boolean;
 }
 
+// Configurable Title
+const GAME_TITLE = "RetroZiah Slab Batch";
+
 export function GameHeader({ onShuffle, onReset, isRevealMode, toggleRevealMode, isInitialized }: GameHeaderProps) {
     return (
         <header className="w-full h-24 px-6 flex items-center justify-between metallic-surface relative z-20">
             {/* Logo */}
             <div className="flex items-center">
-                <h1 className="text-3xl md:text-5xl font-russo text-[#fbbf24] drop-shadow-[0_4px_0_rgba(0,0,0,1)] tracking-wide filter"
+                <h1 className="text-3xl md:text-5xl font-black italic font-russo text-[#fbbf24] drop-shadow-[0_4px_0_rgba(0,0,0,1)] tracking-wide filter transform skew-x-[-10deg]"
                     style={{
-                        textShadow: "0 4px 0 #000, -1px -1px 0 #1e3a8a, 1px -1px 0 #1e3a8a, -1px 1px 0 #1e3a8a, 1px 1px 0 #1e3a8a",
-                        WebkitTextStroke: "1px #1e3a8a"
+                        textShadow: "0 4px 0 #000, -2px -2px 0 #1e3a8a, 2px -2px 0 #1e3a8a, -2px 2px 0 #1e3a8a, 2px 2px 0 #1e3a8a",
+                        WebkitTextStroke: "2px #1e3a8a"
                     }}>
-                    Mystery Slab Shuffle
+                    {GAME_TITLE}
                 </h1>
             </div>
 

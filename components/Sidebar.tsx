@@ -1,12 +1,16 @@
-"use client";
+import { ChaseItem } from "@/types/game";
+import Image from "next/image";
 
 interface SidebarProps {
     onViewChases: () => void;
     packsOpened: number;
     totalPacks: number;
+    chaseOdds: number;
+    chaseItems: ChaseItem[];
+    onToggleChase: (id: string) => void;
 }
 
-export function Sidebar({ onViewChases, packsOpened, totalPacks }: SidebarProps) {
+export function Sidebar({ onViewChases, packsOpened, totalPacks, chaseOdds, chaseItems, onToggleChase }: SidebarProps) {
     const progressPercent = Math.min((packsOpened / totalPacks) * 100, 100);
 
     return (
@@ -46,12 +50,41 @@ export function Sidebar({ onViewChases, packsOpened, totalPacks }: SidebarProps)
                             <div className="absolute bottom-0 left-0 w-full h-[20%] bg-black/20 rounded-b-full" />
                         </div>
                     </div>
+
+                    {/* Odds Display */}
+                    <div className="mt-4 flex justify-between items-center border-t border-white/10 pt-3">
+                        <span className="font-bold text-gray-400 text-xs uppercase tracking-wider">Chase Odds:</span>
+                        <span className="font-mono text-cyan-400 font-bold text-lg drop-shadow-[0_0_5px_rgba(34,211,238,0.5)]">
+                            {chaseOdds}%
+                        </span>
+                    </div>
                 </div>
             </div>
 
-            {/* Placeholder for future sidebar items (e.g. History, Stats) */}
-            <div className="metallic-surface flex-1 rounded-xl min-h-[400px] border-t border-white/10 p-4">
-                {/* This would be the content area */}
+            {/* Chase Gallery (Replaces Blank Square) */}
+            <div className="metallic-surface flex-1 rounded-xl min-h-[400px] border-t border-white/10 p-4 flex flex-col">
+                <h3 className="text-center font-russo text-gray-400 mb-4 tracking-widest text-sm uppercase">Chase Gallery</h3>
+                <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-[500px] pr-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                    {chaseItems.map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => onToggleChase(item.id)}
+                            className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 active:scale-95 cursor-pointer ${item.isPulled ? 'border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)] opacity-100' : 'border-slate-700 opacity-40 grayscale hover:opacity-70'}`}
+                        >
+                            {/* Placeholder for Chase Image - In real app use item.image or generic */}
+                            <div className="absolute inset-0 bg-slate-800 flex items-center justify-center">
+                                <span className="text-[10px] text-center px-1 text-slate-400 font-bold leading-tight select-none">{item.name}</span>
+                            </div>
+
+                            {/* Checkmark overlay if pulled */}
+                            {item.isPulled && (
+                                <div className="absolute inset-0 bg-yellow-500/10 flex items-center justify-center">
+                                    <div className="w-full bg-yellow-500 text-black text-[10px] font-bold text-center absolute bottom-0">FOUND</div>
+                                </div>
+                            )}
+                        </button>
+                    ))}
+                </div>
             </div>
         </div>
     );

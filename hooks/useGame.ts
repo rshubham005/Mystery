@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { Ball, ChaseItem } from "@/types/game";
-import { generateBalls, shuffleArray } from "@/lib/gameLogic";
+import { generateBalls, shuffleArray, reshuffleBalls } from "@/lib/gameLogic";
 
 const TOTAL_PACKS = 50;
 const TOTAL_CHASES = 12;
@@ -27,6 +27,7 @@ export function useGame() {
     const packsOpened = TOTAL_PACKS - packsRemaining;
 
     const shuffle = useCallback(() => {
+        // Allow shuffle if initialized (reshuffle) or if not initialized (start)
         if (isShuffling) return;
 
         // Start shuffle sequence: Trigger exit animation
@@ -34,7 +35,15 @@ export function useGame() {
 
         // Wait for exit animation (e.g. 500ms)
         setTimeout(() => {
-            const newBalls = generateBalls(TOTAL_PACKS);
+            let newBalls;
+            if (isInitialized) {
+                // Reshuffle existing balls (keeps opened ones open)
+                newBalls = reshuffleBalls(balls);
+            } else {
+                // First start: generate new balls
+                newBalls = generateBalls(TOTAL_PACKS);
+            }
+
             setBalls(newBalls);
             setIsInitialized(true);
             setIsRevealing(false); // Reset revealing state if any
@@ -45,7 +54,7 @@ export function useGame() {
                 setIsShuffling(false);
             }, 50);
         }, 500);
-    }, [isShuffling]);
+    }, [isShuffling, isInitialized, balls]);
 
     const resetRound = useCallback(() => {
         setBalls([]);

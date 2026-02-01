@@ -49,13 +49,13 @@ export function Ball({ ball, onClick, disabled, index }: BallProps) {
             <motion.div
                 className="w-full h-full absolute inset-0 flex items-center justify-center"
                 animate={{
-                    y: ball.isRevealed ? 0 : [0, -6, 0]
+                    rotate: ball.isRevealed ? 0 : [0, -10, 0, 10, 0] // Rocking animation
                 }}
                 transition={{
-                    duration: 3,
+                    duration: 2, // Slower, more deliberate rocking
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: index * 0.1 // Deterministic delay based on index
+                    delay: index * 0.05 // Staggered start
                 }}
             >
                 {/* Closed State (Monster Ball Design) */}
@@ -81,6 +81,13 @@ export function Ball({ ball, onClick, disabled, index }: BallProps) {
                             <div className="absolute top-1/2 left-1/2 w-[28%] h-[28%] bg-white rounded-full transform -translate-x-1/2 -translate-y-1/2 z-20 shadow-[0_2px_5px_rgba(0,0,0,0.4)] flex items-center justify-center border-[3px] border-[#1e293b]">
                                 <div className="w-[40%] h-[40%] bg-white rounded-full border border-gray-300 shadow-inner" />
                                 <div className="absolute inset-0 rounded-full shadow-[inset_0_-2px_2px_rgba(0,0,0,0.1)]" />
+                            </div>
+
+                            {/* Index / "Line" Number Label */}
+                            <div className="absolute bottom-[10%] left-0 w-full text-center">
+                                <span className="text-[10px] font-bold text-slate-500/80 font-mono tracking-tighter">
+                                    #{index + 1}
+                                </span>
                             </div>
                         </div>
                     )

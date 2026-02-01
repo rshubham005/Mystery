@@ -20,6 +20,7 @@ export default function Home() {
     resetRound,
     revealBall,
     toggleChase,
+    odds,
   } = useGame();
 
   const [isChaseModalOpen, setIsChaseModalOpen] = useState(false);
@@ -83,6 +84,9 @@ export default function Home() {
               onViewChases={() => setIsChaseModalOpen(true)}
               packsOpened={packsOpened}
               totalPacks={totalPacks}
+              chaseOdds={odds}
+              chaseItems={chaseItems}
+              onToggleChase={toggleChase}
             />
           </div>
 
