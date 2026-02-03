@@ -1,6 +1,6 @@
 "use client";
 
-import { Play, RotateCcw, Eye, RefreshCw, Pencil, Check, X } from "lucide-react";
+import { Play, RotateCcw, Eye, RefreshCw, Pencil, Check, X, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
 
@@ -12,9 +12,10 @@ interface GameHeaderProps {
     isInitialized: boolean;
     title: string;
     onTitleChange: (newTitle: string) => void;
+    onOpenSettings: () => void;
 }
 
-export function GameHeader({ onShuffle, onReset, isRevealMode, toggleRevealMode, isInitialized, title, onTitleChange }: GameHeaderProps) {
+export function GameHeader({ onShuffle, onReset, isRevealMode, toggleRevealMode, isInitialized, title, onTitleChange, onOpenSettings }: GameHeaderProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [tempTitle, setTempTitle] = useState(title);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -125,6 +126,15 @@ export function GameHeader({ onShuffle, onReset, isRevealMode, toggleRevealMode,
                         {isRevealMode ? "ON" : "OFF"}
                     </button>
                 </div>
+
+                {/* Settings Button (NEW) */}
+                <button
+                    onClick={onOpenSettings}
+                    className="p-2 ml-2 bg-slate-800 border border-slate-600 rounded-lg text-slate-400 hover:text-white hover:bg-slate-700 transition-all shadow-md active:scale-95"
+                    title="Game Settings"
+                >
+                    <Settings size={20} />
+                </button>
             </div>
         </header>
     );

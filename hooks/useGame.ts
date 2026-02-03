@@ -13,18 +13,44 @@ const INITIAL_CHASES: ChaseItem[] = Array.from({ length: TOTAL_CHASES }, (_, i) 
     isPulled: false,
 }));
 
-export function useGame() {
+export interface GameConfig {
+    totalPacks: number;
+    totalChases: number;
+}
+
+export function useGame(config: GameConfig) {
     const [balls, setBalls] = useState<Ball[]>([]);
-    const [chaseItems, setChaseItems] = useState<ChaseItem[]>(INITIAL_CHASES);
+
+    // Initialize chase items based on config
+    const [chaseItems, setChaseItems] = useState<ChaseItem[]>([]);
+
+    // Effect to initialize chase items when config changes
+    // We only want to do this initially or when config drastically changes (which might be handled by parent reset)
+    // For now, let's lazy init or effect init.
+    // Better yet, let's use a ref to track if we need to sync, OR just sync when reset is called.
+
+    // Actually, when config changes, we probably want to reset the game or at least the chases if the count mismatches.
+    const prevConfigRef = useState(config)[0]; // simplistic check (might need deep compare if obj changes ref often)
+
     const [isRevealing, setIsRevealing] = useState(false);
     const [isInitialized, setIsInitialized] = useState(false);
     const [isShuffling, setIsShuffling] = useState(false);
 
+    // Initial setup for chases if empty
+    if (chaseItems.length === 0 && config.totalChases > 0) {
+        const initialChases = Array.from({ length: config.totalChases }, (_, i) => ({
+            id: `chase-${i}`,
+            name: `Chase Prize ${i + 1}`,
+            isPulled: false,
+        }));
+        setChaseItems(initialChases);
+    }
+
     // Computed
-    const packsRemaining = TOTAL_PACKS - balls.filter((b) => b.isRevealed).length;
+    const packsRemaining = config.totalPacks - balls.filter((b) => b.isRevealed).length;
     const chasesRemaining = chaseItems.filter((c) => !c.isPulled).length;
     const odds = packsRemaining > 0 ? Math.round((chasesRemaining / packsRemaining) * 100) : 0;
-    const packsOpened = TOTAL_PACKS - packsRemaining;
+    const packsOpened = config.totalPacks - packsRemaining;
 
     const shuffle = useCallback(() => {
         // Allow shuffle if initialized (reshuffle) or if not initialized (start)
@@ -41,7 +67,7 @@ export function useGame() {
                 newBalls = reshuffleBalls(balls);
             } else {
                 // First start: generate new balls
-                newBalls = generateBalls(TOTAL_PACKS);
+                newBalls = generateBalls(config.totalPacks);
             }
 
             setBalls(newBalls);
@@ -54,13 +80,19 @@ export function useGame() {
                 setIsShuffling(false);
             }, 50);
         }, 500);
-    }, [isShuffling, isInitialized, balls]);
+    }, [isShuffling, isInitialized, balls, config.totalPacks]);
 
     const resetRound = useCallback(() => {
         setBalls([]);
-        setChaseItems(INITIAL_CHASES.map(c => ({ ...c, isPulled: false })));
+        // Re-generate chases based on current config
+        const newChases = Array.from({ length: config.totalChases }, (_, i) => ({
+            id: `chase-${i}`,
+            name: `Chase Prize ${i + 1}`,
+            isPulled: false,
+        }));
+        setChaseItems(newChases);
         setIsInitialized(false);
-    }, []);
+    }, [config.totalChases]);
 
     const revealBall = useCallback((id: number) => {
         if (isRevealing) return;
@@ -81,6 +113,12 @@ export function useGame() {
         );
     }, []);
 
+    const updateChaseImage = useCallback((id: string, imageUrl: string) => {
+        setChaseItems((prev) =>
+            prev.map((c) => (c.id === id ? { ...c, imageUrl } : c))
+        );
+    }, []);
+
     return {
         balls,
         packsRemaining,
@@ -96,5 +134,6 @@ export function useGame() {
         revealBall,
         toggleChase,
         updateChaseName,
+        updateChaseImage,
     };
 }

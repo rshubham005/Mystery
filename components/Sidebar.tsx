@@ -22,7 +22,7 @@ export function Sidebar({ onViewChases, packsOpened, totalPacks, chaseOdds, chas
             >
                 <div className="flex flex-col items-center">
                     <span className="text-xl font-russo text-white drop-shadow-[0_2px_0_rgba(0,0,0,0.8)] tracking-wide">
-                        View Chase Prizes
+                        View Chase
                     </span>
                 </div>
             </button>
@@ -64,7 +64,7 @@ export function Sidebar({ onViewChases, packsOpened, totalPacks, chaseOdds, chas
             {/* Chase Gallery (Replaces Blank Square) */}
             <div className="metallic-surface flex-1 rounded-xl min-h-[400px] border-t border-white/10 p-4 flex flex-col">
                 <h3 className="text-center font-russo text-gray-400 mb-4 tracking-widest text-sm uppercase">Chase Gallery</h3>
-                <div className="grid grid-cols-3 gap-2 overflow-y-auto max-h-[500px] pr-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                <div className="grid grid-cols-2 gap-2 overflow-y-auto max-h-[500px] pr-1 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
                     {chaseItems.map((item) => (
                         <button
                             key={item.id}
@@ -72,8 +72,12 @@ export function Sidebar({ onViewChases, packsOpened, totalPacks, chaseOdds, chas
                             className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 active:scale-95 cursor-pointer ${item.isPulled ? 'border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)] opacity-100' : 'border-slate-700 opacity-40 grayscale hover:opacity-70'}`}
                         >
                             {/* Placeholder for Chase Image - In real app use item.image or generic */}
-                            <div className="absolute inset-0 bg-slate-800 flex items-center justify-center">
-                                <span className="text-[10px] text-center px-1 text-slate-400 font-bold leading-tight select-none">{item.name}</span>
+                            <div className="absolute inset-0 bg-slate-800 flex items-center justify-center overflow-hidden">
+                                {item.imageUrl ? (
+                                    <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover opacity-80" />
+                                ) : (
+                                    <span className="text-[10px] text-center px-1 text-slate-400 font-bold leading-tight select-none">{item.name}</span>
+                                )}
                             </div>
 
                             {/* Checkmark overlay if pulled */}

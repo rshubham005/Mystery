@@ -8,6 +8,7 @@ export interface ChaseItem {
     id: string;
     name: string;
     isPulled: boolean;
+    imageUrl?: string;
 }
 
 export interface GameState {
