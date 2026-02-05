@@ -105,8 +105,8 @@ export function ChaseModal({ isOpen, onClose, chaseItems, onToggleChase, onUpdat
                                                 className={cn(
                                                     "w-[200px] h-[300px] rounded-lg border-4 shadow-2xl flex items-center justify-center relative overflow-hidden transition-all group/card",
                                                     currentItem.isPulled
-                                                        ? "border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.4)]"
-                                                        : "border-slate-700 bg-slate-800 grayscale"
+                                                        ? "border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.4)]"
+                                                        : "border-slate-700 bg-slate-800"
                                                 )}
                                             >
                                                 {/* Image Content */}
@@ -124,12 +124,10 @@ export function ChaseModal({ isOpen, onClose, chaseItems, onToggleChase, onUpdat
                                                     </div>
                                                 )}
 
-                                                {/* "PULLED" Overlay */}
+                                                {/* "X" Overlay */}
                                                 {currentItem.isPulled && (
-                                                    <div className="absolute inset-0 bg-yellow-500/20 flex items-center justify-center z-20">
-                                                        <div className="bg-yellow-500 text-black font-black text-2xl px-6 py-2 transform -rotate-12 border-2 border-black shadow-lg">
-                                                            FOUND!
-                                                        </div>
+                                                    <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center z-20">
+                                                        <X className="w-32 h-32 text-red-600 drop-shadow-[0_0_15px_rgba(0,0,0,0.8)] stroke-[3]" />
                                                     </div>
                                                 )}
 

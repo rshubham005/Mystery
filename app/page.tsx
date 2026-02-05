@@ -15,9 +15,16 @@ export default function Home() {
   const [isRevealMode, setIsRevealMode] = useState(false);
   const [gameTitle, setGameTitle] = useState("RetroZiah Slab Batch");
 
-  const [config, setConfig] = useState({
+  const [config, setConfig] = useState<{
+    totalPacks: number;
+    totalChases: number;
+    background: 'default' | 'midnight' | 'royal' | 'forest' | 'custom';
+    customBackgroundImage?: string | null;
+  }>({
     totalPacks: 50,
-    totalChases: 12
+    totalChases: 12,
+    background: 'default',
+    customBackgroundImage: null
   });
 
   const {
@@ -37,19 +44,50 @@ export default function Home() {
 
   const packsOpened = config.totalPacks - packsRemaining;
 
-  const handleSaveConfig = (newConfig: { totalPacks: number; totalChases: number }) => {
+  const handleSaveConfig = (newConfig: { totalPacks: number; totalChases: number; background: 'default' | 'midnight' | 'royal' | 'forest' | 'custom'; customBackgroundImage?: string | null }) => {
     setConfig(newConfig);
-    // Optionally reset the game here if needed, but the hook might handle it or we can let user manually reset
-    // For better UX, let's force a reset if we change these params significantly:
-    // Actually, useGame might need to react to config change.
-    // Let's rely on useGame's internal reaction or we can trigger resetRound manually if we want.
-    // For now, let's just update config. The useGame hook should handle re-init on shuffle/reset.
   };
 
-  return (
-    <main className="min-h-screen text-white overflow-x-hidden relative flex flex-col">
-      {/* Background is handled in globals.css */}
+  // Background styles based on config
+  const getBackgroundStyle = () => {
+    switch (config.background) {
+      case 'midnight':
+        return { background: 'linear-gradient(to bottom, #000000, #0f172a)' };
+      case 'royal':
+        return { background: 'linear-gradient(to bottom, #1a0b2e, #3c096c, #10002b)' };
+      case 'forest':
+        return { background: 'linear-gradient(to bottom, #052e16, #064e3b, #022c22)' };
+      case 'custom':
+        if (config.customBackgroundImage) {
+            return { 
+                backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url(${config.customBackgroundImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundAttachment: 'fixed',
+                backgroundRepeat: 'no-repeat'
+            };
+        }
+        return undefined; // Fallback
+      case 'default':
+      default:
+        return undefined; // Let globals.css handle default
+    }
+  };
 
+  const activeBackgroundStyle = getBackgroundStyle();
+
+  return (
+    <main 
+      className="min-h-screen text-white overflow-x-hidden relative flex flex-col transition-colors duration-700 ease-in-out"
+      style={activeBackgroundStyle}
+    >
+      {/* Overlay to ensure readability if background is too bright (though these are dark) */}
+      {/* If not default, we might want to hide the global body background or just layer on top. 
+          Since main is relative and z-0 (default), it should sit on top of body. 
+          But body background is on <body>. Main needs to have a background to cover it.
+          If activeBackgroundStyle is defined, it will cover body.
+      */}
+      
       <div className="relative z-10 flex flex-col min-h-screen">
 
         {/* Top Header */}
@@ -59,7 +97,6 @@ export default function Home() {
           isRevealMode={isRevealMode}
           toggleRevealMode={() => setIsRevealMode(!isRevealMode)}
           isInitialized={isInitialized}
-          // isInitialized={isInitialized}
           title={gameTitle}
           onTitleChange={setGameTitle}
           onOpenSettings={() => setIsConfigModalOpen(true)}
@@ -68,7 +105,6 @@ export default function Home() {
         {/* Stats Bar */}
         <StatsBar
           chasesRemaining={chasesRemaining}
-          // chasesRemaining={chasesRemaining}
           totalChases={chaseItems.length}
           packsRemaining={packsRemaining}
           totalPacks={config.totalPacks}

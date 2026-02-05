@@ -1,4 +1,5 @@
 import { ChaseItem } from "@/types/game";
+import { X } from "lucide-react";
 import Image from "next/image";
 
 interface SidebarProps {
@@ -69,21 +70,24 @@ export function Sidebar({ onViewChases, packsOpened, totalPacks, chaseOdds, chas
                         <button
                             key={item.id}
                             onClick={() => onToggleChase(item.id)}
-                            className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 active:scale-95 cursor-pointer ${item.isPulled ? 'border-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)] opacity-100' : 'border-slate-700 opacity-40 grayscale hover:opacity-70'}`}
+                            className={`relative aspect-square rounded-md border-2 overflow-hidden transition-all hover:scale-105 active:scale-95 cursor-pointer \
+                                ${item.isPulled 
+                                    ? 'border-red-500/50 opacity-90' 
+                                    : 'border-slate-700/50 hover:border-slate-500 opacity-100'}`}
                         >
-                            {/* Placeholder for Chase Image - In real app use item.image or generic */}
+                            {/* Chase Image or Placeholder */}
                             <div className="absolute inset-0 bg-slate-800 flex items-center justify-center overflow-hidden">
                                 {item.imageUrl ? (
-                                    <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover opacity-80" />
+                                    <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
                                 ) : (
                                     <span className="text-[10px] text-center px-1 text-slate-400 font-bold leading-tight select-none">{item.name}</span>
                                 )}
                             </div>
 
-                            {/* Checkmark overlay if pulled */}
+                            {/* X Overlay if pulled */}
                             {item.isPulled && (
-                                <div className="absolute inset-0 bg-yellow-500/10 flex items-center justify-center">
-                                    <div className="w-full bg-yellow-500 text-black text-[10px] font-bold text-center absolute bottom-0">FOUND</div>
+                                <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] flex items-center justify-center z-10">
+                                    <X className="w-16 h-16 text-red-600 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)] stroke-[3]" />
                                 </div>
                             )}
                         </button>
